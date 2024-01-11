@@ -427,39 +427,48 @@ function test_apache () {
     ## scanning apache ports using NMAP
     nmap -A localhost -sT -p ${port_http[0]} 
     nmap -A localhost -sT -p ${port_https[0]} 
-    #root@wordpress:~# nmap -A localhost -sT -p 80
-	#Starting Nmap 7.80 ( https://nmap.org ) at 2024-01-04 05:54 UTC
+	#root@apache:/vagrant# nmap -A localhost -sT -p 80
+	#Starting Nmap 7.80 ( https://nmap.org ) at 2024-01-11 00:25 UTC
 	#Nmap scan report for localhost (127.0.0.1)
 	#Host is up (0.000091s latency).
 	#Other addresses for localhost (not scanned): ::1
-	#
+
 	#PORT   STATE SERVICE VERSION
-	#80/tcp open  http    Apache httpd 2.4.56 ((Debian))
-	#|_http-server-header: Apache/2.4.56 (Debian)
-	#| http-title: WordPress &rsaquo; Setup Configuration File
-	#|_Requested resource was http://localhost/wp-admin/setup-config.php
+	#80/tcp open  http    Apache httpd
+	#|_http-server-header: Apache
+	#|_http-title: Apache2 Debian Default Page: It works
 	#Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
 	#Device type: general purpose
 	#Running: Linux 2.6.X
 	#OS CPE: cpe:/o:linux:linux_kernel:2.6.32
 	#OS details: Linux 2.6.32
 	#Network Distance: 0 hops
-	#
+
 	#OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-	#Nmap done: 1 IP address (1 host up) scanned in 8.56 seconds
+	#Nmap done: 1 IP address (1 host up) scanned in 8.87 seconds
+	#root@apache:/vagrant#
+
 
     ## simulating web requests using CURL
     curl --head http://localhost
-    #root@wordpress:~# curl --head http://localhost
-    #HTTP/1.1 302 Found
-    #Date: Thu, 04 Jan 2024 05:17:38 GMT
-    #Server: Apache/2.4.56 (Debian)
-    #Location: http://localhost/wp-admin/setup-config.php
-    #Content-Type: text/html; charset=UTF-8
+    #root@apache:/vagrant# curl --head http://localhost
+	#HTTP/1.1 200 OK
+	#Date: Thu, 11 Jan 2024 00:27:56 GMT
+	#Server: Apache
+	#Last-Modified: Thu, 11 Jan 2024 00:16:54 GMT
+	#ETag: "29cd-60ea07700808b"
+	#Accept-Ranges: bytes
+	#Content-Length: 10701
+	#Vary: Accept-Encoding
+	#Content-Type: text/html
+	#
+	#root@apache:/vagrant# 
 
-    curl -v http://localhost
-    #root@wordpress:~# curl http://localhost -v
-    #*   Trying ::1:80...
+    curl -v http://localhost | head
+    #root@apache:/vagrant# curl -v http://localhost | head
+    #  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+    #                                 Dload  Upload   Total   Spent    Left  Speed
+    #  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying ::1:80...
     #* Connected to localhost (::1) port 80 (#0)
     #> GET / HTTP/1.1
     #> Host: localhost
@@ -467,14 +476,32 @@ function test_apache () {
     #> Accept: */*
     #> 
     #* Mark bundle as not supporting multiuse
-    #< HTTP/1.1 302 Found
-    #< Date: Thu, 04 Jan 2024 05:18:21 GMT
-    #< Server: Apache/2.4.56 (Debian)
-    #< Location: http://localhost/wp-admin/setup-config.php
-    #< Content-Length: 0
-    #< Content-Type: text/html; charset=UTF-8
+    #< HTTP/1.1 200 OK
+    #< Date: Thu, 11 Jan 2024 00:30:12 GMT
+    #< Server: Apache
+    #< Last-Modified: Thu, 11 Jan 2024 00:16:54 GMT
+    #< ETag: "29cd-60ea07700808b"
+    #< Accept-Ranges: bytes
+    #< Content-Length: 10701
+    #< Vary: Accept-Encoding
+    #< Content-Type: text/html
     #< 
+    #{ [10701 bytes data]
+    #1
+    #<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    #<html xmlns="http://www.w3.org/1999/xhtml">
+    #  <head>
+    #    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    #    <title>Apache2 Debian Default Page: It works</title>
+    #    <style type="text/css" media="screen">
+    #  * {
+    #    margin: 0px 0px 0px 0px;
+    #    padding: 0px 0px 0px 0px;
+    #00 10701  100 10701    0     0   870k      0 --:--:-- --:--:-- --:--:--  870k
     #* Connection #0 to host localhost left intact
+    #(23) Failed writing body
+    #root@apache:/vagrant# 
+    #
 
 }
 
